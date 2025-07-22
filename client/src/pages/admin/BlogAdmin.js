@@ -30,7 +30,12 @@ const BlogAdmin = () => {
 
   const fetchBlogs = async () => {
     setLoading(true);
-    setBlogs(res.data.posts);
+    try {
+      const res = await api.get('/api/blog?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
+      setBlogs(res.data.posts);
+    } catch (err) {
+      setBlogs([]);
+    }
     setLoading(false);
   };
 
