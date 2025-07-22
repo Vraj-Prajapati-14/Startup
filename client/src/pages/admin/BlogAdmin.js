@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Avatar, CircularProgress, Alert, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const allowedCategories = [
   'technology', 'development', 'design', 'business', 'startup', 'tutorial', 'news', 'case-study'
@@ -30,7 +30,6 @@ const BlogAdmin = () => {
 
   const fetchBlogs = async () => {
     setLoading(true);
-    const res = await axios.get('/api/blog?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
     setBlogs(res.data.posts);
     setLoading(false);
   };
@@ -58,8 +57,9 @@ const BlogAdmin = () => {
     setUploading(true);
     const data = new FormData();
     data.append('image', file);
+    data.append('type', 'blog');
     try {
-      const res = await axios.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
+      const res = await api.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
       setForm(f => ({ ...f, featuredImage: res.data.url }));
     } catch (err) {
       setFormError('Image upload failed: ' + (err.response?.data?.message || err.message));
@@ -98,9 +98,9 @@ const BlogAdmin = () => {
     };
     try {
       if (editing) {
-        await axios.put(`/api/blog/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+        await api.put(`/api/blog/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
       } else {
-        await axios.post('/api/blog', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+        await api.post('/api/blog', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
       }
       fetchBlogs();
       handleClose();
@@ -110,7 +110,7 @@ const BlogAdmin = () => {
   };
 
   const handleDelete = async id => {
-    await axios.delete(`/api/blog/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
+    await api.delete(`/api/blog/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
     fetchBlogs();
   };
 

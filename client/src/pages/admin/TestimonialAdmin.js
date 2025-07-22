@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Avatar, CircularProgress, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const emptyTestimonial = {
   clientName: '',
@@ -27,14 +27,14 @@ const TestimonialAdmin = () => {
 
   const fetchTestimonials = async () => {
     setLoading(true);
-    const res = await axios.get('/api/testimonials?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
+    const res = await api.get('/api/testimonials?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
     setTestimonials(res.data);
     setLoading(false);
   };
 
   const fetchServices = async () => {
     try {
-      const res = await axios.get('/api/services');
+      const res = await api.get('/api/services');
       setServices(res.data);
     } catch (err) {
       console.error('Failed to fetch services:', err);
@@ -71,8 +71,9 @@ const TestimonialAdmin = () => {
     setUploading(true);
     const data = new FormData();
     data.append('image', file);
+    data.append('type', 'testimonials');
     try {
-      const res = await axios.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
+      const res = await api.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
       setForm(f => ({ ...f, clientImage: res.data.url }));
     } catch (err) {
       console.error('Image upload failed:', err);
@@ -96,9 +97,9 @@ const TestimonialAdmin = () => {
     };
     try {
       if (editing) {
-        await axios.put(`/api/testimonials/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+        await api.put(`/api/testimonials/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
       } else {
-        await axios.post('/api/testimonials', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+        await api.post('/api/testimonials', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
       }
       fetchTestimonials();
       handleClose();
@@ -109,7 +110,7 @@ const TestimonialAdmin = () => {
 
   const handleDelete = async id => {
     try {
-      await axios.delete(`/api/testimonials/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
+      await api.delete(`/api/testimonials/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
       fetchTestimonials();
     } catch (err) {
       console.error('Delete failed:', err);

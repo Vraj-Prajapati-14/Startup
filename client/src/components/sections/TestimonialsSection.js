@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../../utils/api';
 import Slider from 'react-slick';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import './TestimonialsSection.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
 
 const PrevArrow = (props) => (
   <button
@@ -37,7 +38,7 @@ const TestimonialsSection = () => {
     const fetchTestimonials = async () => {
       setLoading(true);
       try {
-        const res = await axios.get('/api/testimonials');
+        const res = await api.get('/api/testimonials');
         setTestimonials(res.data);
       } catch (err) {
         setTestimonials([]);

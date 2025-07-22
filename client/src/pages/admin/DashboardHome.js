@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress, Paper, Grid, Avatar } from '@mui/material';
-import axios from 'axios';
+import api from '../../utils/api';
 import ArticleIcon from '@mui/icons-material/Article';
 import WorkIcon from '@mui/icons-material/Work';
 import BuildIcon from '@mui/icons-material/Build';
@@ -31,12 +31,12 @@ const DashboardHome = () => {
           testimonialsRes,
           contactsRes,
         ] = await Promise.all([
-          axios.get('/api/blog?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
-          axios.get('/api/projects?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
-          axios.get('/api/services?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
-          axios.get('/api/team?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
-          axios.get('/api/testimonials?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
-          axios.get('/api/contact?limit=1000', { headers: { Authorization: localStorage.getItem('adminToken') } }),
+          api.get('/api/blog?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
+          api.get('/api/projects?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
+          api.get('/api/services?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
+          api.get('/api/team?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
+          api.get('/api/testimonials?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } }),
+          api.get('/api/contact?limit=1000', { headers: { Authorization: localStorage.getItem('adminToken') } }),
         ]);
         setData({
           blogs: blogsRes.data.posts || blogsRes.data || [],

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Avatar, CircularProgress, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const categories = ['development', 'design', 'consulting', 'support'];
 const emptyService = {
@@ -27,7 +27,7 @@ const ServiceAdmin = () => {
 
   const fetchServices = async () => {
     setLoading(true);
-    const res = await axios.get('/api/services?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
+    const res = await api.get('/api/services?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
     setServices(res.data);
     setLoading(false);
   };
@@ -51,7 +51,7 @@ const ServiceAdmin = () => {
     const data = new FormData();
     data.append('image', file);
     try {
-      const res = await axios.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
+      const res = await api.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
       setForm(f => ({ ...f, icon: res.data.url }));
     } catch (err) {
       console.error('Icon upload failed:', err);
@@ -64,8 +64,10 @@ const ServiceAdmin = () => {
     setUploadingImage(true);
     const data = new FormData();
     data.append('image', file);
+    data.append('type', 'services');
+
     try {
-      const res = await axios.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
+      const res = await api.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
       setForm(f => ({ ...f, image: res.data.url }));
     } catch (err) {
       console.error('Image upload failed:', err);
@@ -88,9 +90,9 @@ const ServiceAdmin = () => {
     };
     try {
       if (editing) {
-        await axios.put(`/api/services/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+        await api.put(`/api/services/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
       } else {
-        await axios.post('/api/services', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+        await api.post('/api/services', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
       }
       fetchServices();
       handleClose();
@@ -101,7 +103,7 @@ const ServiceAdmin = () => {
 
   const handleDelete = async id => {
     try {
-      await axios.delete(`/api/services/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
+      await api.delete(`/api/services/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
       fetchServices();
     } catch (err) {
       console.error('Delete failed:', err);

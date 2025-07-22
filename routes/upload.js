@@ -1,23 +1,32 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
 const router = express.Router();
+const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary');
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: (req, file) => {
+    // Example: use req.body.type to determine folder
+    let folder = 'Startup/others';
+    if (req.body.type === 'blog') folder = 'Startup/blogs';
+    if (req.body.type === 'project') folder = 'Startup/projects';
+    if (req.body.type === 'team') folder = 'Startup/team';
+    if (req.body.type === 'services') folder = 'Startup/services';
+    if (req.body.type === 'testimonials') folder = 'Startup/testimonials';
+    return {
+      folder,
+      allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
+      transformation: [{ width: 800, height: 800, crop: 'limit' }],
+    };
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
 });
-const upload = multer({ storage });
+
+const upload = multer({ storage: storage });
 
 router.post('/', upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
-  }
-  res.json({ url: `/uploads/${req.file.filename}` });
+  // req.file.path is the Cloudinary URL
+  res.json({ url: req.file.path });
 });
 
 module.exports = router;

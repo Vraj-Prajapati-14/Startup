@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import { 
   FiMail, 
   FiPhone, 
@@ -21,7 +21,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const res = await axios.get('/api/services?isActive=true');
+        const res = await api.get('/api/services?isActive=true');
         setServices(res.data);
       } catch (err) {
         console.error('Failed to fetch services:', err);

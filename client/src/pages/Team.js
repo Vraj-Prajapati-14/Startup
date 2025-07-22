@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../utils/api';
 import './Team.css';
 
 const Team = () => {
@@ -11,7 +11,7 @@ const Team = () => {
     const fetchTeam = async () => {
       setLoading(true);
       try {
-        const res = await axios.get('/api/team');
+        const res = await api.get('/api/team');
         setTeam(res.data);
       } catch (err) {
         console.error('Failed to fetch team:', err);

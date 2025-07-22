@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Paper, Typography, Box, Alert } from '@mui/material';
-import axios from 'axios';
+import api from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 
 const AdminLogin = ({ onLogin }) => {
@@ -15,7 +15,7 @@ const AdminLogin = ({ onLogin }) => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('/api/auth/login', { email, password });
+      const res = await api.post('/api/auth/login', { email, password });
       localStorage.setItem('adminToken', res.data.token);
       navigate('/admin/dashboard');
     } catch (err) {

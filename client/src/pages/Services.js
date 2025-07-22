@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../utils/api';
 import { 
   FiCode, 
   FiSmartphone, 
@@ -46,13 +46,13 @@ const Services = () => {
       setLoading(true);
       try {
         // Fetch services
-        const servicesRes = await axios.get('/api/services?isActive=true');
+        const servicesRes = await api.get('/api/services?isActive=true');
         setServices(servicesRes.data);
 
         // Fetch project counts for each service
         const counts = {};
         for (const service of servicesRes.data) {
-          const projectsRes = await axios.get(`/api/projects?category=${service.slug}`);
+          const projectsRes = await api.get(`/api/projects?category=${service.slug}`);
           counts[service.slug] = projectsRes.data.length;
         }
         setProjectCounts(counts);

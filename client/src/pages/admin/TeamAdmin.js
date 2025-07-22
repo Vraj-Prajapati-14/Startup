@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Avatar, CircularProgress, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const departments = ['leadership', 'development', 'design', 'marketing', 'sales', 'hr', 'operations'];
 const emptyMember = { name: '', position: '', department: '', bio: '', shortBio: '', image: '', isActive: true };
@@ -16,7 +16,7 @@ const TeamAdmin = () => {
 
   const fetchTeam = async () => {
     setLoading(true);
-    const res = await axios.get('/api/team?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
+    const res = await api.get('/api/team?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
     setTeam(res.data);
     setLoading(false);
   };
@@ -40,8 +40,10 @@ const TeamAdmin = () => {
     setUploading(true);
     const data = new FormData();
     data.append('image', file);
+    data.append('type', 'team');
+
     try {
-      const res = await axios.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
+      const res = await api.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
       setForm(f => ({ ...f, image: res.data.url }));
     } catch (err) {
       console.error('Image upload failed:', err);
@@ -62,9 +64,9 @@ const TeamAdmin = () => {
     };
     try {
       if (editing) {
-        await axios.put(`/api/team/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+        await api.put(`/api/team/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
       } else {
-        await axios.post('/api/team', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+        await api.post('/api/team', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
       }
       fetchTeam();
       handleClose();
@@ -75,7 +77,7 @@ const TeamAdmin = () => {
 
   const handleDelete = async id => {
     try {
-      await axios.delete(`/api/team/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
+      await api.delete(`/api/team/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
       fetchTeam();
     } catch (err) {
       console.error('Delete failed:', err);

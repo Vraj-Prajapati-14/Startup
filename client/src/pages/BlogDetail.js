@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../utils/api';
 import './BlogDetail.css';
 
 const BlogDetail = () => {
@@ -13,7 +13,7 @@ const BlogDetail = () => {
     const fetchBlog = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`/api/blog/${slug}`);
+        const res = await api.get(`/api/blog/${slug}`);
         setBlog(res.data);
       } catch (err) {
         setBlog(null);

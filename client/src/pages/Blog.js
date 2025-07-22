@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../utils/api';
 import './Blog.css';
 
 const Blog = () => {
@@ -11,7 +11,7 @@ const Blog = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       setLoading(true);
-      const res = await axios.get('/api/blog');
+      const res = await api.get('/api/blog');
       setBlogs(res.data.posts);
       setLoading(false);
     };

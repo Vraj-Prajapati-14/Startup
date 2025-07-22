@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Avatar, CircularProgress, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const statuses = ['completed', 'in-progress', 'on-hold'];
 const emptyProject = {
@@ -35,14 +35,14 @@ const ProjectAdmin = () => {
 
   const fetchProjects = async () => {
     setLoading(true);
-    const res = await axios.get('/api/projects?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
+    const res = await api.get('/api/projects?all=true', { headers: { Authorization: localStorage.getItem('adminToken') } });
     setProjects(res.data);
     setLoading(false);
   };
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('/api/projects/categories/all');
+      const res = await api.get('/api/projects/categories/all');
       setCategories(res.data);
     } catch (err) {
       console.error('Failed to fetch categories:', err);
@@ -72,7 +72,8 @@ const ProjectAdmin = () => {
     setUploadingFeatured(true);
     const data = new FormData();
     data.append('image', file);
-    const res = await axios.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
+    data.append('type', 'project');
+    const res = await api.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
     setForm(f => ({ ...f, featuredImage: res.data.url }));
     setUploadingFeatured(false);
   };
@@ -82,7 +83,8 @@ const ProjectAdmin = () => {
     setUploadingImage(true);
     const data = new FormData();
     data.append('image', file);
-    const res = await axios.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
+    data.append('type', 'project');
+    const res = await api.post('/api/upload', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: localStorage.getItem('adminToken') } });
     setNewImage(res.data.url);
     setUploadingImage(false);
   };
@@ -116,16 +118,16 @@ const ProjectAdmin = () => {
       status: form.status
     };
     if (editing) {
-      await axios.put(`/api/projects/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+      await api.put(`/api/projects/${editing._id}`, payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
     } else {
-      await axios.post('/api/projects', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
+      await api.post('/api/projects', payload, { headers: { Authorization: localStorage.getItem('adminToken') } });
     }
     fetchProjects();
     handleClose();
   };
 
   const handleDelete = async id => {
-    await axios.delete(`/api/projects/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
+    await api.delete(`/api/projects/${id}`, { headers: { Authorization: localStorage.getItem('adminToken') } });
     fetchProjects();
   };
 

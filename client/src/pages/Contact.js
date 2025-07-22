@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import api from '../utils/api';
 import { 
   FiMail, 
   FiPhone, 
@@ -25,7 +25,7 @@ const Contact = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const res = await axios.get('/api/services?isActive=true');
+        const res = await api.get('/api/services?isActive=true');
         setServices(res.data);
       } catch (err) {
         console.error('Failed to fetch services:', err);

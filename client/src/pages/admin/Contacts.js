@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../../utils/api';
 import { toast } from 'react-hot-toast';
 import { 
   FiSearch, 
@@ -50,7 +50,7 @@ const Contacts = () => {
         sortOrder
       });
 
-      const response = await axios.get(`/api/contact?${params}`);
+      const response = await api.get(`/api/contact?${params}`);
       setContacts(response.data.contacts);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -63,7 +63,7 @@ const Contacts = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('/api/contact/stats/summary');
+      const response = await api.get('/api/contact/stats/summary');
       setStats(response.data);
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -73,7 +73,7 @@ const Contacts = () => {
   const handleStatusUpdate = async (contactId, newStatus) => {
     try {
       setUpdating(true);
-      await axios.put(`/api/contact/${contactId}`, { status: newStatus });
+      await api.put(`/api/contact/${contactId}`, { status: newStatus });
       toast.success('Status updated successfully');
       fetchContacts();
       fetchStats();
@@ -91,7 +91,7 @@ const Contacts = () => {
     }
 
     try {
-      await axios.delete(`/api/contact/${contactId}`);
+      await api.delete(`/api/contact/${contactId}`);
       toast.success('Contact deleted successfully');
       fetchContacts();
       fetchStats();
@@ -104,7 +104,7 @@ const Contacts = () => {
   const handleReply = async (contactId, adminNotes, repliedBy) => {
     try {
       setUpdating(true);
-      await axios.put(`/api/contact/${contactId}`, {
+      await api.put(`/api/contact/${contactId}`, {
         status: 'contacted',
         adminNotes,
         repliedBy

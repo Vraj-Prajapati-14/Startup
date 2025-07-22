@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../utils/api';
 import { 
   FiCode, 
   FiSmartphone, 
@@ -49,11 +49,11 @@ const ServiceDetail = () => {
       setLoading(true);
       try {
         // Fetch service details
-        const serviceRes = await axios.get(`/api/services/${slug}`);
+        const serviceRes = await api.get(`/api/services/${slug}`);
         setService(serviceRes.data);
         
         // Fetch projects for this service
-        const projectsRes = await axios.get(`/api/projects?category=${slug}`);
+        const projectsRes = await api.get(`/api/projects?category=${slug}`);
         setProjects(projectsRes.data);
       } catch (err) {
         console.error('Failed to fetch data:', err);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../../utils/api';
 import { getServiceIcon } from '../../utils/serviceIcons';
 import './ServicesSection.css';
 
@@ -14,7 +14,7 @@ const ServicesSection = () => {
       setLoading(true);
       try {
         // Fetch featured services for homepage
-        const res = await axios.get('/api/services?featured=true&isActive=true');
+        const res = await api.get('/api/services?featured=true&isActive=true');
         setServices(res.data);
       } catch (err) {
         console.error('Failed to fetch services:', err);
