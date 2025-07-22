@@ -58,7 +58,7 @@ const Header = () => {
         { name: 'Loading...', path: '/services' }
       ] : services.length === 0 ? [
         { name: 'No services available', path: '/services' }
-      ] : services.map(service => ({
+      ] : (Array.isArray(services) ? services : []).map(service => ({
         name: service.title,
         path: `/services/${service.slug}`
       }))
