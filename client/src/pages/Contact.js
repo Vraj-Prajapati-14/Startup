@@ -39,21 +39,12 @@ const Contact = () => {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
+      const res = await api.post('/api/contact', data);
+      if (res.data && res.data.success) {
         toast.success('Thank you for your message! We will get back to you soon.');
         reset();
       } else {
-        toast.error(result.message || 'Something went wrong. Please try again.');
+        toast.error(res.data.message || 'Something went wrong. Please try again.');
       }
     } catch (error) {
       toast.error('Network error. Please check your connection and try again.');
