@@ -122,7 +122,7 @@ const Footer = () => {
               ) : services.length === 0 ? (
                 <li>No services available</li>
               ) : (
-                services.slice(0, 5).map((service, index) => (
+                (Array.isArray(services) ? services : []).slice(0, 5).map((service, index) => (
                   <li key={service._id}>
                     <Link to={`/services/${service.slug}`} className="footer-link">
                       {service.title}
