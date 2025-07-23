@@ -4,6 +4,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 const Payment = require('../models/Payment');
 const router = express.Router();
+const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -73,24 +74,44 @@ router.get('/history', async (req, res) => {
 });
 
 // Set up a webhook endpoint
-router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
-
   const signature = req.headers['x-razorpay-signature'];
-  const body = req.body;
 
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(body)
-    .digest('hex');
+  const isValid = validateWebhookSignature(req.body, signature, secret);
 
-  if (signature === expectedSignature) {
-    // Process the event (e.g., payment.captured, payment.failed)
-    // Save/update payment status in your DB
-    res.status(200).json({ status: 'ok' });
-  } else {
-    res.status(400).json({ status: 'invalid signature' });
+  if (!isValid) {
+    return res.status(400).json({ status: 'invalid signature' });
   }
-});
 
-module.exports = router;
+  const event = JSON.parse(req.body.toString());
+
+  if (event.event.startsWith('payment.')) {
+    const paymentEntity = event.payload.payment.entity;
+    let status = '';
+    if (event.event === 'payment.captured') status = 'success';
+    else if (event.event === 'payment.failed') status = 'failed';
+    else if (event.event === 'payment.authorized') status = 'authorized';
+    else status = event.event.replace('payment.', '');
+
+    await Payment.findOneAndUpdate(
+      { paymentId: paymentEntity.id },
+      {
+        orderId: paymentEntity.order_id,
+        paymentId: paymentEntity.id,
+        amount: paymentEntity.amount / 100,
+        currency: paymentEntity.currency,
+        status,
+        email: paymentEntity.email,
+        name: paymentEntity.notes?.name || '',
+      },
+      { upsert: true }
+    );
+  }
+
+  // You can handle other event types (dispute, downtime, etc.) similarly
+
+  res.status(200).json({ status: 'ok' });
+});
+ 
+module.exports = router; 
