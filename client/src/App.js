@@ -26,6 +26,8 @@ const ProjectAdmin = lazy(() => import('./pages/admin/ProjectAdmin'));
 const ServiceAdmin = lazy(() => import('./pages/admin/ServiceAdmin'));
 const ContactsAdmin = lazy(() => import('./pages/admin/Contacts'));
 const DashboardHome = lazy(() => import('./pages/admin/DashboardHome'));
+const PaymentPage = lazy(() => import('./pages/admin/PaymentPage'));
+const PaymentHistory = lazy(() => import('./pages/admin/PaymentHistory'));
 
 function App() {
   return (
@@ -57,6 +59,8 @@ function App() {
                 <Route path="projects" element={<ProjectAdmin />} />
                 <Route path="services" element={<ServiceAdmin />} />
                 <Route path="contacts" element={<ContactsAdmin />} />
+                <Route path="payment" element={<PaymentPage />} />
+                <Route path="payment-history" element={<PaymentHistory />} />
               </Route>
             </Route>
           </Routes>
