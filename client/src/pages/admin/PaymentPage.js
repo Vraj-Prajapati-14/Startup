@@ -26,26 +26,31 @@ const PaymentPage = () => {
         order_id: orderId,
         handler: async function (response) {
           // Send all details to backend for verification
-          const verifyRes = await api.post('/api/payments/verify', {
-            orderId: response.razorpay_order_id,
-            paymentId: response.razorpay_payment_id,
-            signature: response.razorpay_signature,
-            amount: orderAmount / 100,
-            currency,
-            email,
-            name
-          });
-          if (verifyRes.data.success) {
-            alert('Payment successful!');
-          } else {
+          try {
+            const verifyRes = await api.post('/api/payments/verify', {
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              amount: orderAmount / 100,
+              currency,
+              email,
+              name
+            });
+            if (verifyRes.data.success) {
+              alert('Payment successful!');
+            } else {
+              // This will catch cases where payment is not captured or signature is invalid
+              alert('Payment failed or was cancelled!');
+            }
+          } catch (err) {
             alert('Payment verification failed!');
           }
         },
         prefill: { name, email },
         modal: {
           ondismiss: function () {
+            // Only show this if handler is NOT called
             alert('Payment cancelled by user.');
-            // Optionally, you can log or handle cancellation here
           }
         }
       };

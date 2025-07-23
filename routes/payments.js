@@ -81,7 +81,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) =>
 
   const expectedSignature = crypto
     .createHmac('sha256', secret)
-    .update(req.body)
+    .update(body)
     .digest('hex');
 
   if (signature === expectedSignature) {
