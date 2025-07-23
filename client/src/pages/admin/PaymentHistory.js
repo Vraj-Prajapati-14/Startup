@@ -14,9 +14,9 @@ const PaymentHistory = () => {
   }, []);
 
   return (
-    <div>
+    <div className="payment-history-container">
       <h2>Payment History</h2>
-      <table>
+      <table className="payment-history-table">
         <thead>
           <tr>
             <th>Date</th>

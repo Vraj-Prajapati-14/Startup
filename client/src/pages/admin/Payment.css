@@ -100,7 +100,7 @@
 }
 
 @media (max-width: 600px) {
-  .payment-container, .payment-history-container {
+  .payment-history-container {
     padding: 16px 4px;
   }
   .payment-history-table th, .payment-history-table td {

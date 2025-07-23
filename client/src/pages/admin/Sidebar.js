@@ -8,6 +8,8 @@ import BuildIcon from '@mui/icons-material/Build';
 import MailIcon from '@mui/icons-material/Mail';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HomeIcon from '@mui/icons-material/Home';
+import PaymentIcon from '@mui/icons-material/Payment';
+import HistoryIcon from '@mui/icons-material/History';
 // import PaymentIcon from '@mui/icons-material/Payment';
 // import PaymentHistoryIcon from '@mui/icons-material/PaymentHistory';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -20,8 +22,8 @@ const menu = [
   { text: 'Projects', icon: <WorkIcon />, path: '/admin/projects' },
   { text: 'Services', icon: <BuildIcon />, path: '/admin/services' },
   { text: 'Contacts', icon: <MailIcon />, path: '/admin/contacts' },
-  { text: 'Payment',  path: '/admin/payment' },
-  { text: 'Payment History',  path: '/admin/payment-history' },
+  { text: 'Payment', icon: <PaymentIcon />, path: '/admin/payment' },
+  { text: 'Payment History', icon: <HistoryIcon />, path: '/admin/payment-history' },
 ];
 
 const Sidebar = () => {
